@@ -5,6 +5,7 @@ import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
 import { ShoppingEditComponent } from "./shopping-list/shopping-edit/shopping-edit.component";
 import { RecipeDetailComponent } from "./recipes/recipe-detail/recipe-detail.component";
+import { ShoppingListComponent } from './shopping-list/shopping-list.component';
 
 const appRoutes: Routes = [
   {
@@ -36,7 +37,7 @@ const appRoutes: Routes = [
   },
   {
     path: "shopping-list",
-    component: ShoppingEditComponent,
+    component: ShoppingListComponent,
   },
 ];
 
