@@ -1,7 +1,7 @@
 import { AuthService } from "./../auth/auth.service";
 import { Injectable } from "@angular/core";
-import { HttpClient, HttpParams } from "@angular/common/http";
-import { map, tap, take, exhaustMap } from "rxjs/operators";
+import { HttpClient } from "@angular/common/http";
+import { map, tap } from "rxjs/operators";
 
 import { Recipe } from "../recipes/recipe.model";
 import { RecipeService } from "../recipes/recipe.service";
@@ -25,17 +25,11 @@ export class DataStorageService {
 
   fetchRecipes() {
     // get the latest value and unsubscribe
-    return this.authService.user
+    return this.http
+      .get<Recipe[]>(
+        "https://angular-course-7f424.firebaseio.com/recipes.json"
+      )
       .pipe(
-        take(1),
-        exhaustMap(user => {
-          return this.http.get<Recipe[]>(
-            "https://angular-course-7f424.firebaseio.com/recipes.json",
-            {
-              params: new HttpParams().set('auth', user.token)
-            }
-          );
-        }),
         map(recipes => {
           return recipes.map(recipe => {
             return {
