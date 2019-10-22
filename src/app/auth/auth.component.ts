@@ -1,26 +1,38 @@
-import { Component, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
-import { AuthService, AuthResponseData } from './auth.service';
-import { Observable } from 'rxjs';
-import { Router } from '@angular/router';
+import { Component, OnInit, ViewChild, ComponentFactoryResolver, OnDestroy } from "@angular/core";
+import { NgForm } from "@angular/forms";
+import { AuthService, AuthResponseData } from "./auth.service";
+import { Observable, Subscription } from "rxjs";
+import { Router } from "@angular/router";
+import { AlertComponent } from "../shared/alert/alert.component";
+import { PlaceholderDirective } from '../shared/placeholder/placeholder.directive';
 
 @Component({
-  selector: 'app-auth',
-  templateUrl: './auth.component.html',
-  styleUrls: ['./auth.component.css']
+  selector: "app-auth",
+  templateUrl: "./auth.component.html",
+  styleUrls: ["./auth.component.css"]
 })
-export class AuthComponent implements OnInit {
+export class AuthComponent implements OnInit, OnDestroy {
   isLoginMode = true;
   isLoading = false;
   error: string = null;
 
-  constructor(private authService: AuthService, private router: Router) { }
+  @ViewChild(PlaceholderDirective, { static: false }) alertHost: PlaceholderDirective;
+  private closeSub: Subscription;
 
-  ngOnInit() {
-  }
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private componentFactoryResolver: ComponentFactoryResolver
+  ) {}
+
+  ngOnInit() {}
 
   onSwitchMode() {
     this.isLoginMode = !this.isLoginMode;
+  }
+
+  onHandleError() {
+    this.error = null;
   }
 
   onSubmit(form: NgForm) {
@@ -44,16 +56,40 @@ export class AuthComponent implements OnInit {
       resData => {
         console.log("onSubmit resData", resData);
         this.isLoading = false;
-        this.router.navigate(['/recipes']);
+        this.router.navigate(["/recipes"]);
       },
       errorMessage => {
         console.log("onSubmit errorMessage", errorMessage);
         this.error = errorMessage;
+        this.showErrorAlert(errorMessage);
         this.isLoading = false;
       }
     );
 
     form.reset();
+  }
+
+  private showErrorAlert(message: string) {
+    // const alertCmp = new AlertComponent();
+    const alertCmpFactory = this.componentFactoryResolver.resolveComponentFactory(
+      AlertComponent
+    );
+    const hostViewContainerRef = this.alertHost.viewContainerRef;
+    hostViewContainerRef.clear();
+
+    const componentRef = hostViewContainerRef.createComponent(alertCmpFactory);
+
+    componentRef.instance.message = message;
+    this.closeSub = componentRef.instance.close.subscribe(() => {
+      this.closeSub.unsubscribe();
+      hostViewContainerRef.clear();
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.closeSub) {
+      this.closeSub.unsubscribe();
+    }
   }
 
 }

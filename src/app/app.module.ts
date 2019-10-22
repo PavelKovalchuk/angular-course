@@ -1,3 +1,4 @@
+import { PlaceholderDirective } from './shared/placeholder/placeholder.directive';
 import { AuthInterceptorService } from "./auth/auth-interceptor.service";
 import { AppRoutingModule } from "./app-routing.module";
 import { HeaderComponent } from "./header/header.component";
@@ -20,6 +21,7 @@ import { RecipeService } from "./recipes/recipe.service";
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { AuthComponent } from "./auth/auth.component";
 import { LoadingSpinnerComponent } from "./shared/loading-spinner/loading-spinner.component";
+import { AlertComponent } from './shared/alert/alert.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +37,9 @@ import { LoadingSpinnerComponent } from "./shared/loading-spinner/loading-spinne
     RecipeStartComponent,
     RecipeEditComponent,
     AuthComponent,
-    LoadingSpinnerComponent
+    LoadingSpinnerComponent,
+    AlertComponent,
+    PlaceholderDirective,
   ],
   imports: [
     FormsModule,
@@ -53,6 +57,9 @@ import { LoadingSpinnerComponent } from "./shared/loading-spinner/loading-spinne
       multi: true
     }
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [
+    AlertComponent,
+  ],
 })
 export class AppModule {}
