@@ -7,6 +7,7 @@ import { Routes, RouterModule } from "@angular/router";
 import { RecipeDetailComponent } from "./recipes/recipe-detail/recipe-detail.component";
 import { ShoppingListComponent } from './shopping-list/shopping-list.component';
 import { AuthComponent } from './auth/auth.component';
+import { AuthGuard } from './auth/auth.guard';
 
 const appRoutes: Routes = [
   {
@@ -17,6 +18,7 @@ const appRoutes: Routes = [
   {
     path: "recipes",
     component: RecipesComponent,
+    canActivate: [AuthGuard],
     children: [
       {
         path: "",
