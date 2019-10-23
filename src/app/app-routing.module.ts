@@ -18,9 +18,18 @@ const appRoutes: Routes = [
   },
   {
     path: "auth",
-    loadChildren: "./auth/auth.module#AuthModule"
+    // loadChildren: "./auth/auth.module#AuthModule",
+    loadChildren:  () => import('./auth/auth.module').then(m => m.AuthModule)
   }
 ];
+
+/**
+ * Alternative
+ * const routes: Routes = [{
+  path: 'your-path',
+  loadChildren: () => import('./your-module-path/module-name.module').then(m => m.ModuleName)
+}];
+ */
 
 @NgModule({
   imports: [RouterModule.forRoot(appRoutes, {preloadingStrategy: PreloadAllModules})],
